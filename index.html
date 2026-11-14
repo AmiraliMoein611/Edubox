@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EduBox | جعبه‌ابزار دانش‌آموزی</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F2F5FA;--ink:#17254A;--muted:#5F6C8A;--line:#D5DCEA;--mark:#FFC93C;--ok:#1E9E8F;--bad:#D64545;--r:14px}
+*{box-sizing:border-box;margin:0}
+body{font-family:Vazirmatn,Tahoma,sans-serif;color:var(--ink);background:var(--paper) linear-gradient(var(--line) 1px,transparent 1px) 0 0/28px 28px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);line-height:1.8;min-height:100vh}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.hide{display:none!important}
+header.top{background:var(--ink);color:#fff;display:flex;align-items:center;gap:1rem;padding:.5rem clamp(1rem,3vw,2rem);position:sticky;top:0;z-index:5;overflow-x:auto}
+.logo{font-weight:800;font-size:1.4rem;white-space:nowrap}.logo span{background:var(--mark);color:var(--ink);padding:0 .3em;border-radius:6px}
+nav{display:flex;gap:.2rem}
+nav button{background:none;border:0;color:#cfd6ea;padding:.4em .9em;border-radius:10px;white-space:nowrap}
+nav button.on,nav button:hover{background:rgba(255,255,255,.14);color:#fff}
+main{max-width:980px;margin:0 auto;padding:1.5rem clamp(1rem,3vw,2rem) 3rem}
+h1{font-size:1.5rem;margin-bottom:1rem}h2{font-size:1.1rem;margin-bottom:.6rem}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1.1rem;margin-bottom:1rem}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:.5em 1.2em;font-weight:600}
+.btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}.btn.sm{padding:.1em .7em;font-size:.88rem}.btn.bad{background:var(--bad)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input,select{width:100%;padding:.5em .7em;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+label{display:block;font-size:.9rem;color:var(--muted);margin:.6rem 0 .2rem}
+.g{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{border:1.5px solid var(--ink);background:#fff;border-radius:99px;padding:.15em .9em}
+.chip.on{background:var(--mark)}
+.note{font-size:.85rem;color:var(--muted);margin-top:.5rem}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{text-align:right;padding:.45rem .4rem;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+.big{font-size:2rem;font-weight:800;line-height:1.4}.neg{color:var(--bad)}
+svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.85rem;margin-top:.4rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-left:.3rem;vertical-align:middle}
+/* countdown */
+.cd{display:flex;gap:.6rem;margin:.6rem 0}
+.cd div{background:var(--ink);color:#fff;border-radius:12px;padding:.4rem .9rem;text-align:center;min-width:72px}
+.cd b{display:block;font-size:1.8rem;line-height:1.3}.cd small{opacity:.7}
+.tl{position:relative;padding-right:1.4rem;list-style:none}
+.tl:before{content:"";position:absolute;right:6px;top:.5rem;bottom:.5rem;width:2px;background:var(--line)}
+.tl li{position:relative;padding:.4rem 0}
+.tl li:before{content:"";position:absolute;right:-1.4rem;top:.9rem;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--ink)}
+.tl li.first:before{background:var(--mark)}
+.tl small{color:var(--muted);display:block}
+/* tools home */
+.tool{text-align:right;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1rem;display:block;width:100%}
+.tool:hover:not(.soon){border-color:var(--ink)}
+.tool b{display:block}.tool span{font-size:.85rem;color:var(--muted)}
+.tool.soon{opacity:.55;cursor:default}
+.res{font-size:1.5rem;font-weight:800;margin-top:.8rem}
+.pill{padding:.1em .7em;border-radius:99px;font-size:.82rem;background:#FFF1BF;font-weight:400}
+.msg{margin-top:.8rem;padding:.6rem .8rem;background:#FFF6D6;border-radius:10px;font-size:.92rem}
+.pt{display:grid;grid-template-columns:repeat(18,minmax(38px,1fr));grid-template-rows:repeat(7,auto) 10px repeat(2,auto);gap:3px;min-width:720px}
+.el{border:1px solid rgba(23,37,74,.18);border-radius:6px;padding:1px 0;font-size:.62rem;text-align:center;line-height:1.35;color:var(--ink);cursor:pointer}
+.el b{display:block;font-size:.95rem}
+.el.sel{outline:3px solid var(--ink)}
+.c-alk{background:#FFD6D6}.c-ake{background:#FFE4C2}.c-trn{background:#FFF1B8}.c-pot{background:#D9EEDD}.c-mtl{background:#CDEBE8}.c-non{background:#D8E6FA}.c-hal{background:#E4DCF7}.c-nob{background:#F6D9EE}.c-lan{background:#E8E3D3}.c-act{background:#EAD9D0}
+textarea{width:100%;min-height:110px;padding:.5em .7em;border:1.5px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:inherit}
+input[type=file]{padding:.4em}input[type=range]{padding:0}
+.stats{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem}.stats div{background:var(--paper);border-radius:10px;padding:.3rem .9rem;font-size:.85rem}.stats b{display:block;font-size:1.3rem}
+
+@media(max-width:560px){.cd div{min-width:58px;padding:.3rem .5rem}.cd b{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">Edu<span>Box</span></div>
+  <nav id="nav">
+    <button data-p="home" class="on">خانه</button>
+    <button data-p="pct">درصدگیر</button>
+    <button data-p="unit">تبدیل واحد</button>
+    <button data-p="sci">شیمی</button>
+    <button data-p="math">ریاضی</button>
+    <button data-p="img">عکس</button>
+    <button data-p="date">تاریخ</button>
+    <button data-p="misc">ابزارهای مطالعه</button>
+    <button data-p="exam">امتحان‌های پیش رو</button>
+    <button data-p="acct" id="navAcct" style="margin-right:auto">ورود / ثبت‌نام</button>
+  </nav>
+</header>
+<main>
+
+<section id="home" class="pane">
+  <div class="card"><h2>امتحان بعدی کلاس شما</h2>
+    <label for="hc">کلاس</label><select id="hc"></select>
+    <div id="hcd"></div></div>
+  <h1>ابزارها</h1>
+  <div class="g" id="tools"></div>
+</section>
+
+<section id="pct" class="pane hide">
+  <h1>درصدگیر</h1>
+  <div class="card">
+    <div class="g">
+      <div><label for="pc">کلاس</label><select id="pc"></select></div>
+      <div><label for="pn">نام آزمون</label><input id="pn" placeholder="مثلاً آزمون ماهانه آبان"></div>
+    </div>
+    <label>حالت</label>
+    <div class="chips" id="modes"><button class="chip on" data-m="1">تک‌درس</button><button class="chip" data-m="2">چند درس</button></div>
+    <label>درس‌ها</label><div class="chips" id="subs"></div>
+    <label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" id="neg" checked style="width:auto"> نمره منفی (هر غلط، یک‌سوم یک صحیح)</label>
+    <div id="rows"></div>
+    <div id="out"></div>
+    <div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn" id="calc">محاسبه</button><button class="btn alt" id="save" disabled>ذخیره در تاریخچه</button></div>
+  </div>
+  <div class="card"><h2>نمودار پیشرفت</h2><div id="chart"></div><div class="legend" id="legend"></div></div>
+  <div class="card"><h2>تاریخچه</h2><table><thead><tr><th>آزمون</th><th>تاریخ</th><th>درصد کل</th><th></th></tr></thead><tbody id="hist"></tbody></table>
+    <p class="note">تاریخچه روی حساب شما ذخیره می‌شود.</p></div>
+</section>
+
+<section id="unit" class="pane hide">
+  <h1>تبدیل واحد</h1>
+  <div class="card">
+    <label for="uq">کمیت</label><select id="uq"></select>
+    <div class="g">
+      <div><label for="ua">مقدار</label><input id="ua" type="number" value="1" step="any"></div>
+      <div><label for="uf">از</label><select id="uf"></select></div>
+      <div><label for="ut">به</label><select id="ut"></select></div>
+    </div>
+    <div class="res" id="ur"></div>
+    <p class="note" id="un"></p>
+  </div>
+</section>
+
+<section id="sci" class="pane hide">
+  <h1>شیمی</h1>
+  <div class="card"><h2>جرم مولی</h2>
+    <label for="mf">فرمول شیمیایی (با حروف لاتین، مثلاً H2SO4 یا Ca(OH)2)</label>
+    <input id="mf" value="Ca(OH)2" dir="ltr" style="text-align:left">
+    <div class="res" id="mr"></div><div id="mb" class="note"></div></div>
+  <div class="card"><h2>جدول تناوبی</h2>
+    <label for="pts">جستجو (نام فارسی، نماد یا عدد اتمی)</label><input id="pts" placeholder="مثلاً آهن یا Fe یا ۲۶">
+    <div id="ptd" class="msg" style="margin-bottom:.8rem">روی یک عنصر بزنید.</div>
+    <div style="overflow-x:auto"><div class="pt" id="pt" dir="ltr"></div></div>
+    <div class="legend" id="ptl" style="margin-top:.6rem"></div>
+    <p class="note">برای عنصرهای پرتوزا، عدد جرمی پایدارترین ایزوتوپ نوشته شده است.</p></div>
+  <div class="card"><h2>موازنه معادله شیمیایی</h2>
+    <label for="beq">معادله (مثلاً Fe + O2 -> Fe2O3)</label><input id="beq" value="Fe + O2 -> Fe2O3" dir="ltr" style="text-align:left">
+    <button class="btn" id="bbtn" style="margin-top:.8rem">موازنه کن</button><div class="res" id="bres" dir="ltr" style="text-align:left"></div><p class="note" id="berr"></p></div>
+</section>
+
+<section id="img" class="pane hide">
+  <h1>ابزارهای عکس</h1>
+  <div class="card"><h2>پردازش عکس</h2>
+    <label for="ifile">عکس</label><input id="ifile" type="file" accept="image/*"><p class="note" id="iinfo"></p>
+    <label>کار مورد نظر</label>
+    <div class="chips" id="imodes"><button class="chip on" data-m="k">کم‌حجم کردن</button><button class="chip" data-m="r">تغییر اندازه</button><button class="chip" data-m="p">برش ۳×۴</button><button class="chip" data-m="f">تبدیل فرمت</button></div>
+    <div class="g">
+      <div><label for="ifmt">فرمت خروجی</label><select id="ifmt"><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></div>
+      <div><label for="iq">کیفیت (برای JPEG و WebP)</label><input id="iq" type="range" min="0.2" max="1" step="0.05" value="0.7"></div>
+      <div><label for="iw">عرض به پیکسل</label><input id="iw" type="number" min="16" placeholder="مثلاً 800"></div>
+    </div>
+    <p class="note">کم‌حجم کردن: عرض اختیاری است و فقط کوچک می‌کند. تغییر اندازه: عرض لازم است. برش ۳×۴: از وسط عکس بریده می‌شود و عرض خروجی پیش‌فرض ۶۰۰ است.</p>
+    <button class="btn" id="iproc" style="margin-top:.6rem">پردازش</button>
+    <div id="ires" style="margin-top:1rem"></div>
+  </div>
+  <div class="card"><h2>تبدیل عکس به PDF</h2>
+    <label for="pfile">یک یا چند عکس (هر عکس یک صفحه A4)</label><input id="pfile" type="file" accept="image/*" multiple>
+    <button class="btn" id="pbtn" style="margin-top:.8rem">ساخت PDF</button><div id="pres" style="margin-top:1rem"></div></div>
+</section>
+
+<section id="date" class="pane hide">
+  <h1>تاریخ</h1>
+  <div class="card"><h2>امروز</h2><div class="big" id="dtoday"></div></div>
+  <div class="card"><h2>میلادی به شمسی</h2><label for="dg">تاریخ میلادی</label><input id="dg" type="date"><div class="res" id="dgr"></div></div>
+  <div class="card"><h2>شمسی به میلادی</h2>
+    <div class="g"><div><label for="djy">سال</label><input id="djy" type="number" value="1405"></div><div><label for="djm">ماه</label><select id="djm"></select></div><div><label for="djd">روز</label><input id="djd" type="number" min="1" max="31" value="1"></div></div>
+    <div class="res" id="djr"></div></div>
+  <div class="card"><h2>فاصله بین دو تاریخ</h2>
+    <div class="g"><div><label for="da">از (میلادی)</label><input id="da" type="date"></div><div><label for="db">تا (میلادی)</label><input id="db" type="date"></div></div>
+    <div class="res" id="dfr"></div></div>
+</section>
+
+<section id="misc" class="pane hide">
+  <h1>ابزارهای مطالعه</h1>
+  <div class="card"><h2>تایمر پومودورو</h2>
+    <div class="chips" id="pmodes"><button class="chip on" data-m="f">تمرکز ۲۵ دقیقه</button><button class="chip" data-m="s">استراحت کوتاه ۵</button><button class="chip" data-m="l">استراحت بلند ۱۵</button></div>
+    <div class="big" id="ptime" style="font-size:3rem;margin:.6rem 0"></div>
+    <div style="display:flex;gap:.5rem"><button class="btn" id="pgo">شروع</button><button class="btn alt" id="prs">بازنشانی</button></div></div>
+  <div class="card"><h2>شمارنده کلمه</h2>
+    <textarea id="wtxt" placeholder="متن خود را اینجا بنویسید یا Paste کنید"></textarea>
+    <div class="stats" id="wst"></div></div>
+  <div class="card"><h2>تبدیل اعداد فارسی و انگلیسی</h2>
+    <label for="din">متن ورودی</label><textarea id="din"></textarea>
+    <div style="display:flex;gap:.5rem;margin:.6rem 0"><button class="btn" id="d2fa">به اعداد فارسی</button><button class="btn" id="d2en">به اعداد انگلیسی</button></div>
+    <label for="dout">نتیجه</label><textarea id="dout" readonly></textarea>
+    <button class="btn alt sm" id="dcp" style="margin-top:.5rem">کپی نتیجه</button></div>
+</section>
+
+<section id="acct" class="pane hide">
+  <h1>حساب کاربری</h1>
+  <div class="card" style="max-width:460px">
+    <div class="chips" id="atabs"><button class="chip on" data-t="l">ورود</button><button class="chip" data-t="r">ثبت‌نام</button></div>
+    <form id="fl">
+      <label for="lu">نام کاربری</label><input id="lu" autocomplete="username">
+      <label for="lp">رمز عبور</label><input id="lp" type="password" autocomplete="current-password">
+      <button class="btn" style="margin-top:.8rem">ورود</button>
+    </form>
+    <form id="fr" class="hide">
+      <label for="rn">نام و نام خانوادگی</label><input id="rn">
+      <label for="rc">کلاس</label><select id="rc"></select>
+      <label for="ru">نام کاربری</label><input id="ru" autocomplete="username">
+      <label for="rp">رمز عبور</label><input id="rp" type="password" autocomplete="new-password">
+      <button class="btn" style="margin-top:.8rem">ارسال درخواست ثبت‌نام</button>
+    </form>
+    <div class="msg hide" id="amsg"></div>
+  </div>
+</section>
+
+<section id="me" class="pane hide">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem"><h1 id="mh"></h1><button class="btn alt sm" id="mout">خروج</button></div>
+  <div class="g">
+    <div class="card"><div class="note">آزمون ثبت‌شده</div><div class="big" id="m1"></div></div>
+    <div class="card"><div class="note">آخرین درصد کل</div><div class="big" id="m2"></div></div>
+    <div class="card"><div class="note">بهترین درصد کل</div><div class="big" id="m3"></div></div>
+  </div>
+  <div class="card"><h2>امتحان بعدی کلاس شما</h2><div id="mcd"></div></div>
+  <div class="card"><h2>تغییر نام کاربری و رمز عبور</h2>
+    <form id="fcred">
+      <div class="g">
+        <div><label for="cu">نام کاربری</label><input id="cu" autocomplete="username"></div>
+        <div><label for="cp0">رمز عبور فعلی (لازم است)</label><input id="cp0" type="password" autocomplete="current-password"></div>
+        <div><label for="cp1">رمز عبور جدید (اختیاری)</label><input id="cp1" type="password" autocomplete="new-password"></div>
+        <div><label for="cp2">تکرار رمز جدید</label><input id="cp2" type="password" autocomplete="new-password"></div>
+      </div>
+      <button class="btn" style="margin-top:.8rem">ذخیره تغییرات</button>
+    </form>
+    <div class="msg hide" id="cmsg"></div></div>
+  <div class="card"><p class="note">درصدگیر و نمودار پیشرفتی که وارد حساب خودتان شده‌اید، روی همین حساب ذخیره می‌شود.</p></div>
+</section>
+
+<section id="math" class="pane hide">
+  <h1>ریاضی</h1>
+  <div class="card"><h2>جدول مثلثاتی زاویه‌های مهم</h2>
+    <div style="overflow-x:auto"><table><thead><tr><th>درجه</th><th>رادیان</th><th>sin</th><th>cos</th><th>tan</th><th>cot</th></tr></thead><tbody id="trig"></tbody></table></div>
+    <p class="note">مقدارها دقیق و به‌صورت رادیکالی هستند. جاهایی که تعریف‌نشده نوشته شده، مخرج کسر صفر می‌شود.</p></div>
+</section>
+
+<section id="exam" class="pane hide">
+  <h1>امتحان‌های پیش رو</h1>
+  <div class="card"><label for="ec">کلاس</label><select id="ec"></select><div id="ecd"></div></div>
+</section>
+
+<section id="admin" class="pane hide">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem"><h1>پنل مدیر</h1><button class="btn alt sm" id="aout">خروج</button></div>
+  <div class="g" id="astat"></div>
+  <p class="note" id="acls" style="margin:.5rem 0 1rem"></p>
+  <div class="card"><h2>درخواست‌های ثبت‌نام</h2><table><tbody id="pend"></tbody></table>
+    </div>
+  <div class="card"><h2>همه دانش‌آموزان</h2>
+    <div style="overflow-x:auto"><table><thead><tr><th>نام</th><th>کلاس</th><th>نام کاربری</th><th>وضعیت</th><th>آزمون</th><th>میانگین</th><th></th></tr></thead><tbody id="slist"></tbody></table></div>
+    <p class="note">با دکمه «جزئیات» درصد و آمار هر دانش‌آموز را ببینید.</p></div>
+  <div class="card hide" id="sdet"></div>
+  <div class="card" id="apanel"><h2>ثبت برنامه امتحانی</h2>
+    <div class="g">
+      <div><label for="ac">کلاس</label><select id="ac"></select></div>
+      <div><label for="as">نام امتحان</label><input id="as" placeholder="مثلاً امتحان ریاضی، فصل ۲" maxlength="60"></div>
+      <div><label for="at">تاریخ و ساعت</label><input id="at" type="datetime-local"></div>
+    </div>
+    <button class="btn" id="aadd" style="margin-top:.8rem">افزودن امتحان</button>
+    <p class="note">برنامه‌ای که ثبت می‌کنید برای همه دانش‌آموزان نمایش داده می‌شود.</p>
+    <table style="margin-top:.8rem"><tbody id="alist"></tbody></table></div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const fa=(n,d=1)=>Number(n).toLocaleString('fa-IR',{maximumFractionDigits:d});
+const CL={'تجربی':['شیمی','زیست','فیزیک','ریاضی'],'ریاضی ۱':['هندسه','فیزیک','ریاضی','شیمی'],'ریاضی ۲':['هندسه','فیزیک','ریاضی','شیمی']};
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const opts=(el,arr)=>el.innerHTML=arr.map(a=>`<option>${a}</option>`).join('');
+['hc','pc','ec','ac'].forEach(i=>opts($('#'+i),Object.keys(CL)));
+
+/* ناوبری */
+function go(p){$$('.pane').forEach(x=>x.classList.toggle('hide',x.id!==p));$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));scrollTo(0,0)}
+$$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+const T=[['pct','درصدگیر','تک‌درس و چنددرس، با نمودار پیشرفت'],['unit','تبدیل واحد','طول، جرم، دما، فشار، واحدهای قدیمی و بیشتر'],['sci','شیمی','جدول تناوبی، جرم مولی و موازنه معادله'],['math','ریاضی','جدول سینوس، کسینوس، تانژانت و کتانژانت'],['exam','امتحان‌های پیش رو','شمارش معکوس و تایم‌لاین'],['img','عکس','کم‌حجم کردن، تغییر اندازه، برش ۳×۴، تبدیل فرمت و تبدیل به PDF'],['date','تاریخ','شمسی و میلادی و فاصله بین دو تاریخ'],['misc','ابزارهای مطالعه','پومودورو، شمارنده کلمه و تبدیل اعداد']];
+$('#tools').innerHTML=T.map(t=>`<button class="tool ${t[0]?'':'soon'}" data-p="${t[0]}"><b>${t[1]}</b><span>${t[2]}</span></button>`).join('');
+$$('.tool').forEach(b=>b.onclick=()=>b.dataset.p&&go(b.dataset.p));
+
+/* ===== امتحان‌ها ===== */
+let ex=[];
+const fmtD=t=>new Date(t).toLocaleString('fa-IR',{weekday:'long',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+function nextList(c){return ex.filter(e=>e.c===c&&e.t>Date.now()).sort((a,b)=>a.t-b.t)}
+function cdHTML(c,full){
+  const l=nextList(c);if(!l.length)return '<p class="note">امتحان ثبت‌شده‌ای در پیش نیست.</p>';
+  let d=l[0].t-Date.now();const P=[[864e5,'روز'],[36e5,'ساعت'],[6e4,'دقیقه'],[1e3,'ثانیه']];
+  const boxes=P.map(([u,n])=>{const v=Math.floor(d/u);d-=v*u;return `<div><b>${fa(v,0)}</b><small>${n}</small></div>`}).join('');
+  let h=`<p style="font-weight:600">${esc(l[0].s)} <span class="note">— ${fmtD(l[0].t)}</span></p><div class="cd">${boxes}</div>`;
+  if(full)h+=`<ul class="tl">${l.map((e,i)=>`<li class="${i?'':'first'}"><b>${esc(e.s)}</b><small>${fmtD(e.t)}</small></li>`).join('')}</ul>`;
+  return h;
+}
+function tick(){$('#hcd').innerHTML=cdHTML($('#hc').value,false);$('#ecd').innerHTML=cdHTML($('#ec').value,true);const m=$('#mcd');if(m&&m.dataset.c)m.innerHTML=cdHTML(m.dataset.c,false)}
+$('#hc').value=$('#ec').value=store.get('eb_class','تجربی');
+[$('#hc'),$('#ec')].forEach(s=>s.onchange=()=>{store.set('eb_class',s.value);$('#hc').value=$('#ec').value=s.value;tick()});
+setInterval(tick,1000);tick();
+/* پنل مدیر (نمایشی) */
+
+/* ===== درصدگیر ===== */
+let mode=1,sel=new Set(),cur=null,hist=[];
+function subs(){const l=CL[$('#pc').value];if(![...sel].every(s=>l.includes(s)))sel=new Set();if(!sel.size)sel.add(l[0]);
+  $('#subs').innerHTML=l.map(s=>`<button class="chip ${sel.has(s)?'on':''}" data-s="${s}">${s}</button>`).join('');
+  $$('#subs .chip').forEach(b=>b.onclick=()=>{const s=b.dataset.s;if(mode==1)sel=new Set([s]);else sel.has(s)?sel.size>1&&sel.delete(s):sel.add(s);subs();rows()})}
+function rows(){$('#rows').innerHTML=[...sel].map((s,i)=>`<div class="g" style="grid-template-columns:90px repeat(4,1fr);align-items:end" data-s="${s}"><b style="padding-bottom:.4rem">${s}</b><div><label>سوال</label><input type="number" min="0" class="t" value="20"></div><div><label>صحیح</label><input type="number" min="0" class="c" value="12"></div><div><label>غلط</label><input type="number" min="0" class="w" value="4"></div><div><label>ضریب</label><input type="number" min="1" class="k" value="${s==='ریاضی'?3:2}"></div></div>`).join('');$('#out').innerHTML='';$('#save').disabled=true}
+$$('#modes .chip').forEach(b=>b.onclick=()=>{mode=+b.dataset.m;$$('#modes .chip').forEach(x=>x.classList.toggle('on',x===b));if(mode==1)sel=new Set([[...sel][0]]);subs();rows()});
+$('#pc').onchange=()=>{subs();rows()};subs();rows();
+$('#calc').onclick=()=>{
+  const neg=$('#neg').checked,r=[];let bad=false;
+  $$('#rows [data-s]').forEach(d=>{const t=+d.querySelector('.t').value,c=+d.querySelector('.c').value,w=+d.querySelector('.w').value,k=+d.querySelector('.k').value||1;
+    if(!t||c<0||w<0||c+w>t){bad=true;return}
+    r.push({s:d.dataset.s,p:neg?(c*3-w)/(t*3)*100:c/t*100,k,n:t-c-w})});
+  if(bad){$('#out').innerHTML='<p class="neg">تعداد صحیح و غلط نباید از تعداد سوال بیشتر باشد.</p>';$('#save').disabled=true;return}
+  const K=r.reduce((a,x)=>a+x.k,0),all=r.reduce((a,x)=>a+x.p*x.k,0)/K;cur={subs:r.map(x=>({s:x.s,p:x.p})),overall:all};
+  $('#out').innerHTML=`<table style="margin-top:1rem"><thead><tr><th>درس</th><th>نزده</th><th>درصد</th></tr></thead><tbody>${r.map(x=>`<tr><td>${x.s}</td><td>${fa(x.n,0)}</td><td class="${x.p<0?'neg':''}">${fa(x.p)}٪</td></tr>`).join('')}</tbody></table>${r.length>1?`<div class="big ${all<0?'neg':''}">درصد کل: ${fa(all)}٪</div><p class="note">میانگین وزنی با ضریب درس‌ها</p>`:''}`;
+  $('#save').disabled=false};
+$('#save').onclick=()=>saveRes();
+const COL=['#17254A','#1E9E8F','#D64545','#E58A00','#7A4FD1'];
+function drawH(){
+  $('#hist').innerHTML=hist.length?[...hist].map((h,i)=>[h,i]).reverse().map(([h,i])=>`<tr><td>${h.n}</td><td>${new Date(h.d).toLocaleDateString('fa-IR')}</td><td>${fa(h.overall)}٪</td><td style="text-align:left"><button class="btn bad sm" data-i="${i}">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="note">هنوز آزمونی ذخیره نشده.</td></tr>';
+  $$('#hist button').forEach(b=>b.onclick=()=>{delRes(+b.dataset.i)});
+  const names=['درصد کل',...new Set(hist.flatMap(h=>h.subs.map(s=>s.s)))];
+  if(hist.length<1){$('#chart').innerHTML='<p class="note">بعد از ذخیره اولین آزمون، نمودار اینجا ظاهر می‌شود.</p>';$('#legend').innerHTML='';return}
+  const W=640,H=230,m=34,all=hist.flatMap(h=>[h.overall,...h.subs.map(s=>s.p)]),lo=Math.min(0,...all),hi=100;
+  const x=i=>hist.length==1?W/2:m+i*(W-2*m)/(hist.length-1),y=p=>H-m-(p-lo)/(hi-lo)*(H-2*m);
+  const val=(h,n)=>n==='درصد کل'?h.overall:(h.subs.find(s=>s.s===n)||{}).p;
+  let g=[0,50,100].map(v=>`<line x1="${m}" x2="${W-m}" y1="${y(v)}" y2="${y(v)}" stroke="#D5DCEA"/><text x="${m-6}" y="${y(v)+4}" font-size="11" text-anchor="end" fill="#5F6C8A">${fa(v,0)}</text>`).join('');
+  names.forEach((n,k)=>{const pts=hist.map((h,i)=>[i,val(h,n)]).filter(p=>p[1]!=null),c=COL[k%5];
+    g+=`<polyline fill="none" stroke="${c}" stroke-width="${k?2:3.5}" stroke-linejoin="round" ${k?'stroke-dasharray="5 4"':''} points="${pts.map(p=>x(p[0])+','+y(p[1])).join(' ')}"/>`+pts.map(p=>`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="4" fill="${c}"/>`).join('')});
+  $('#chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار پیشرفت">${g}</svg>`;
+  $('#legend').innerHTML=names.map((n,k)=>`<span><i style="background:${COL[k%5]}"></i>${n}</span>`).join('');
+}
+drawH();
+
+/* ===== تبدیل واحد ===== */
+const U={
+'طول':{'متر':1,'کیلومتر':1e3,'سانتی‌متر':.01,'میلی‌متر':.001,'مایل':1609.344,'فوت':.3048,'اینچ':.0254,'ذرع (قدیمی)':1.04,'فرسنگ (قدیمی)':6e3},
+'جرم':{'کیلوگرم':1,'گرم':.001,'میلی‌گرم':1e-6,'تن':1e3,'پوند':.45359237,'اونس':.028349523,'مثقال (قدیمی)':.004608,'سیر (قدیمی)':.075},
+'مساحت':{'متر مربع':1,'کیلومتر مربع':1e6,'هکتار':1e4,'سانتی‌متر مربع':1e-4,'فوت مربع':.09290304,'جریب (قدیمی، تقریبی)':1e3},
+'حجم':{'لیتر':1,'میلی‌لیتر':.001,'متر مکعب':1e3,'سانتی‌متر مکعب':.001,'گالن آمریکا':3.785411784},
+'دما':null,
+'زمان':{'ثانیه':1,'دقیقه':60,'ساعت':3600,'روز':86400,'هفته':604800},
+'سرعت':{'متر بر ثانیه':1,'کیلومتر بر ساعت':1/3.6,'مایل بر ساعت':.44704,'گره دریایی':.514444},
+'نیرو':{'نیوتن':1,'کیلونیوتن':1e3,'کیلوگرم‌نیرو':9.80665},
+'فشار':{'پاسکال':1,'کیلوپاسکال':1e3,'اتمسفر':101325,'بار':1e5,'میلی‌متر جیوه':133.322},
+'انرژی':{'ژول':1,'کیلوژول':1e3,'کالری':4.184,'کیلوکالری':4184,'کیلووات‌ساعت':3.6e6},
+'توان':{'وات':1,'کیلووات':1e3,'اسب‌بخار':745.7},
+'حجم داده':{'بایت':1,'بیت':.125,'کیلوبایت':1024,'مگابایت':1048576,'گیگابایت':1073741824,'ترابایت':1099511627776},
+'زاویه':{'درجه':Math.PI/180,'رادیان':1,'گراد':Math.PI/200}};
+const TK={'سانتی‌گراد':[v=>v,v=>v],'فارنهایت':[v=>(v-32)*5/9,v=>v*9/5+32],'کلوین':[v=>v-273.15,v=>v+273.15]};
+opts($('#uq'),Object.keys(U));
+function uFill(){const q=$('#uq').value,k=q==='دما'?Object.keys(TK):Object.keys(U[q]);opts($('#uf'),k);opts($('#ut'),k);$('#ut').selectedIndex=Math.min(1,k.length-1);uCalc()}
+function uCalc(){const q=$('#uq').value,v=parseFloat($('#ua').value),f=$('#uf').value,t=$('#ut').value;
+  if(isNaN(v)){$('#ur').textContent='';return}
+  const r=q==='دما'?TK[t][1](TK[f][0](v)):v*U[q][f]/U[q][t];
+  $('#ur').textContent=`${fa(v,6)} ${f} = ${fa(r,6)} ${t}`;
+  $('#un').textContent=/قدیمی/.test(f+t)?'مقدار واحدهای قدیمی بسته به منطقه کمی فرق می‌کند.':''}
+$('#uq').onchange=uFill;['ua','uf','ut'].forEach(i=>$('#'+i).oninput=uCalc);uFill();
+
+/* ===== جرم مولی ===== */
+const ELS='H,هیدروژن,1.008;He,هلیم,4.003;Li,لیتیم,6.94;Be,بریلیم,9.012;B,بور,10.81;C,کربن,12.011;N,نیتروژن,14.007;O,اکسیژن,15.999;F,فلوئور,18.998;Ne,نئون,20.18;Na,سدیم,22.99;Mg,منیزیم,24.305;Al,آلومینیوم,26.982;Si,سیلیسیم,28.085;P,فسفر,30.974;S,گوگرد,32.06;Cl,کلر,35.45;Ar,آرگون,39.948;K,پتاسیم,39.098;Ca,کلسیم,40.078;Sc,اسکاندیم,44.956;Ti,تیتانیم,47.867;V,وانادیم,50.942;Cr,کروم,51.996;Mn,منگنز,54.938;Fe,آهن,55.845;Co,کبالت,58.933;Ni,نیکل,58.693;Cu,مس,63.546;Zn,روی,65.38;Ga,گالیم,69.723;Ge,ژرمانیم,72.63;As,آرسنیک,74.922;Se,سلنیم,78.971;Br,برم,79.904;Kr,کریپتون,83.798;Rb,روبیدیم,85.468;Sr,استرانسیم,87.62;Y,ایتریم,88.906;Zr,زیرکونیم,91.224;Nb,نیوبیم,92.906;Mo,مولیبدن,95.95;Tc,تکنسیم,98;Ru,روتنیم,101.07;Rh,رودیم,102.906;Pd,پالادیم,106.42;Ag,نقره,107.868;Cd,کادمیم,112.414;In,ایندیم,114.818;Sn,قلع,118.71;Sb,آنتیموان,121.76;Te,تلوریم,127.6;I,ید,126.904;Xe,زنون,131.293;Cs,سزیم,132.905;Ba,باریم,137.327;La,لانتان,138.905;Ce,سریم,140.116;Pr,پراسئودیمیم,140.908;Nd,نئودیمیم,144.242;Pm,پرومتیم,145;Sm,ساماریم,150.36;Eu,یوروپیم,151.964;Gd,گادولینیم,157.25;Tb,تربیم,158.925;Dy,دیسپروزیم,162.5;Ho,هولمیم,164.93;Er,اربیم,167.259;Tm,تولیم,168.934;Yb,ایتربیم,173.045;Lu,لوتتیم,174.967;Hf,هافنیم,178.486;Ta,تانتال,180.948;W,تنگستن,183.84;Re,رنیم,186.207;Os,اسمیم,190.23;Ir,ایریدیم,192.217;Pt,پلاتین,195.084;Au,طلا,196.967;Hg,جیوه,200.592;Tl,تالیم,204.38;Pb,سرب,207.2;Bi,بیسموت,208.98;Po,پولونیم,209;At,آستاتین,210;Rn,رادون,222;Fr,فرانسیم,223;Ra,رادیم,226;Ac,اکتینیم,227;Th,توریم,232.038;Pa,پروتاکتینیم,231.036;U,اورانیم,238.029;Np,نپتونیم,237;Pu,پلوتونیم,244;Am,آمریسیم,243;Cm,کوریم,247;Bk,برکلیم,247;Cf,کالیفرنیم,251;Es,انیشتینیم,252;Fm,فرمیم,257;Md,مندلیویم,258;No,نوبلیم,259;Lr,لارنسیم,266;Rf,رادرفوردیم,267;Db,دوبنیم,268;Sg,سیبورگیم,269;Bh,بوریم,270;Hs,هاسیم,277;Mt,مایتنریم,278;Ds,دارمشتادتیم,281;Rg,رونتگنیم,282;Cn,کوپرنیسیم,285;Nh,نیهونیم,286;Fl,فلروویم,289;Mc,مسکوویم,290;Lv,لیورموریم,293;Ts,تنسین,294;Og,اوگانسون,294';
+const EL=ELS.split(';').map((q,i)=>{const t=q.split(',');return{z:i+1,s:t[0],n:t[1],m:+t[2]}});
+const E={};EL.forEach(e=>E[e.s]=e.m);
+function mm(f){const st=[{}],re=/([A-Z][a-z]?)(\d*)|(\()|\)(\d*)/g;let m;
+  while(m=re.exec(f)){const top=st[st.length-1];
+    if(m[1]){if(!(m[1] in E))throw'عنصر «'+m[1]+'» شناخته نشد.';top[m[1]]=(top[m[1]]||0)+(+m[2]||1)}
+    else if(m[3])st.push({});
+    else{if(st.length<2)throw'پرانتز بسته اضافه است.';const o=st.pop(),k=+m[4]||1,p=st[st.length-1];for(const e in o)p[e]=(p[e]||0)+o[e]*k}}
+  if(st.length!==1)throw'پرانتز باز بسته نشده.';return st[0]}
+function mCalc(){const f=$('#mf').value.trim();
+  try{if(!f||!/^[A-Za-z0-9()]+$/.test(f))throw'فرمول را با حروف و اعداد لاتین وارد کنید.';
+    const c=mm(f),M=Object.entries(c).reduce((a,[e,n])=>a+E[e]*n,0);
+    $('#mr').textContent=fa(M,3)+' g/mol';$('#mr').className='res';
+    $('#mb').textContent=Object.entries(c).map(([e,n])=>`${e}: ${fa(n,0)} × ${fa(E[e],3)}`).join('  |  ')}
+  catch(e){$('#mr').textContent='';$('#mb').textContent=e}}
+$('#mf').oninput=mCalc;mCalc();
+
+/* ===== جدول مثلثاتی ===== */
+const SB={0:'0',30:'1/2',45:'√2/2',60:'√3/2',90:'1'},CB={0:'1',30:'√3/2',45:'√2/2',60:'1/2',90:'0'},
+TB={0:'0',30:'√3/3',45:'1',60:'√3',90:null},KB={0:null,30:'√3',45:'1',60:'√3/3',90:'0'};
+const fd=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const tv=(v,s)=>v==null?'تعریف‌نشده':(v==='0'||s>0)?fd(v):'−'+fd(v);
+$('#trig').innerHTML=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360].map(t=>{
+  const q=t<=90?1:t<=180?2:t<=270?3:4,r=[t,180-t,t-180,360-t][q-1];
+  const ss=q<3?1:-1,cs=(q==1||q==4)?1:-1,ts=(q==1||q==3)?1:-1;
+  const g=gcd(t,180)||180,p=t/g,d=180/g;
+  const rad=t===0?'۰':fd((p==1?'':p)+'π'+(d==1?'':'/'+d));
+  return `<tr><td>${fa(t,0)}°</td><td><bdi dir="ltr">${rad}</bdi></td><td><bdi dir="ltr">${tv(SB[r],ss)}</bdi></td><td><bdi dir="ltr">${tv(CB[r],cs)}</bdi></td><td><bdi dir="ltr">${tv(TB[r],ts)}</bdi></td><td><bdi dir="ltr">${tv(KB[r],ts)}</bdi></td></tr>`}).join('');
+
+/* ===== جدول تناوبی ===== */
+const CATN={alk:'فلز قلیایی',ake:'فلز قلیایی خاکی',trn:'فلز واسطه',pot:'فلز پس‌واسطه',mtl:'شبه‌فلز',non:'نافلز',hal:'هالوژن',nob:'گاز نجیب',lan:'لانتانید',act:'اکتینید'};
+const CATC={alk:'#FFD6D6',ake:'#FFE4C2',trn:'#FFF1B8',pot:'#D9EEDD',mtl:'#CDEBE8',non:'#D8E6FA',hal:'#E4DCF7',nob:'#F6D9EE',lan:'#E8E3D3',act:'#EAD9D0'};
+const catOf=z=>[3,11,19,37,55,87].includes(z)?'alk':[4,12,20,38,56,88].includes(z)?'ake':z>=57&&z<=71?'lan':z>=89&&z<=103?'act':[2,10,18,36,54,86,118].includes(z)?'nob':[9,17,35,53,85,117].includes(z)?'hal':[5,14,32,33,51,52].includes(z)?'mtl':[1,6,7,8,15,16,34].includes(z)?'non':((z>=21&&z<=30)||(z>=39&&z<=48)||(z>=72&&z<=80)||(z>=104&&z<=112))?'trn':'pot';
+const ptPos=z=>{
+  if(z===1)return[1,1];if(z===2)return[18,1];
+  if(z<=4)return[z-2,2];if(z<=10)return[z+8,2];
+  if(z<=12)return[z-10,3];if(z<=18)return[z,3];
+  if(z<=36)return[z-18,4];if(z<=54)return[z-36,5];
+  if(z<=56)return[z-54,6];if(z<=70)return[z-54,9];
+  if(z<=86)return[z-68,6];
+  if(z<=88)return[z-86,7];if(z<=102)return[z-86,10];
+  return[z-100,7]};
+const FA='۰۱۲۳۴۵۶۷۸۹',AR='٠١٢٣٤٥٦٧٨٩';
+const toEn=s=>String(s).replace(/[۰-۹]/g,d=>FA.indexOf(d)).replace(/[٠-٩]/g,d=>AR.indexOf(d));
+$('#pt').innerHTML=EL.map(e=>{const[c,r]=ptPos(e.z);return `<button class="el c-${catOf(e.z)}" style="grid-column:${c};grid-row:${r}" data-z="${e.z}"><small>${e.z}</small><b>${e.s}</b></button>`}).join('');
+$('#ptl').innerHTML=Object.keys(CATN).map(k=>`<span><i style="background:${CATC[k]};border:1px solid #17254A33"></i>${CATN[k]}</span>`).join('');
+function ptShow(z){const e=EL[z-1];$$('#pt .el').forEach(b=>b.classList.toggle('sel',+b.dataset.z===z));
+  $('#ptd').innerHTML=`<b>${e.n}</b> (<span dir="ltr">${e.s}</span>) — عدد اتمی ${fd(e.z)} — جرم اتمی ${fa(e.m,3)} — ${CATN[catOf(z)]}`}
+$$('#pt .el').forEach(b=>b.onclick=()=>ptShow(+b.dataset.z));
+$('#pts').oninput=()=>{const q=toEn($('#pts').value.trim()).toLowerCase();if(!q)return;
+  const e=EL.find(x=>String(x.z)===q||x.s.toLowerCase()===q)||EL.find(x=>x.n.includes($('#pts').value.trim()));
+  if(e)ptShow(e.z)};
+
+/* ===== موازنه معادله ===== */
+const qgcd=(a,b)=>b?qgcd(b,a%b):Math.abs(a);
+const qr=(n,d=1)=>{if(d<0){n=-n;d=-d}const g=qgcd(n,d)||1;return[n/g,d/g]};
+const qadd=(a,b)=>qr(a[0]*b[1]+b[0]*a[1],a[1]*b[1]),qmul=(a,b)=>qr(a[0]*b[0],a[1]*b[1]),qdiv=(a,b)=>qr(a[0]*b[1],a[1]*b[0]);
+function balance(eq){
+  const parts=eq.split(/->|=>|→|=/);
+  if(parts.length!==2||!parts[1].trim())throw'معادله باید یک فلش داشته باشد، مثلاً H2 + O2 -> H2O';
+  const side=s=>s.split('+').map(x=>x.trim().replace(/^\d+\s*/,'')).filter(Boolean);
+  const left=side(parts[0]),right=side(parts[1]),comps=[...left,...right];
+  if(!left.length||!right.length)throw'هر دو طرف معادله باید ماده داشته باشند.';
+  const cs=comps.map(mm),els=[...new Set(cs.flatMap(c=>Object.keys(c)))];
+  const A=els.map(e=>cs.map((c,j)=>qr((c[e]||0)*(j<left.length?1:-1),1)));
+  const rows=A.length,cols=comps.length,piv=[];let r=0;
+  for(let c=0;c<cols&&r<rows;c++){
+    let p=-1;for(let i=r;i<rows;i++)if(A[i][c][0]!==0){p=i;break}
+    if(p<0)continue;
+    [A[r],A[p]]=[A[p],A[r]];
+    const pv=A[r][c];A[r]=A[r].map(v=>qdiv(v,pv));
+    for(let i=0;i<rows;i++)if(i!==r&&A[i][c][0]!==0){const f=A[i][c];A[i]=A[i].map((v,j)=>qadd(v,qmul(qr(-1),qmul(f,A[r][j]))))}
+    piv.push(c);r++}
+  const free=[...Array(cols).keys()].filter(c=>!piv.includes(c));
+  if(!free.length)throw'این معادله قابل موازنه نیست. فرمول مواد را بررسی کنید.';
+  if(free.length>1)throw'این معادله بی‌نهایت جواب دارد. مطمئن شوید همه مواد درست نوشته شده‌اند.';
+  const x=Array.from({length:cols},()=>[0,1]);x[free[0]]=[1,1];
+  piv.forEach((c,i)=>{x[c]=qmul(qr(-1),A[i][free[0]])});
+  let L=1;x.forEach(v=>{L=L*v[1]/qgcd(L,v[1])});
+  let k=x.map(v=>v[0]*(L/v[1]));
+  if(k.every(v=>v<=0))k=k.map(v=>-v);
+  if(k.some(v=>v<=0))throw'این معادله با ضرایب مثبت موازنه نمی‌شود.';
+  const g=k.reduce((a,b)=>qgcd(a,b));k=k.map(v=>v/g);
+  const fmt=(arr,off)=>arr.map((c,i)=>(k[off+i]>1?k[off+i]+' ':'')+c.replace(/(\d+)/g,'<sub>$1</sub>')).join(' + ');
+  return fmt(left,0)+' → '+fmt(right,left.length)}
+$('#bbtn').onclick=()=>{try{$('#bres').innerHTML=balance($('#beq').value);$('#berr').textContent=''}catch(e){$('#bres').innerHTML='';$('#berr').textContent=typeof e==='string'?e:'معادله خوانده نشد.'}};
+
+/* ===== عکس ===== */
+let imode='k',imgUrl=null;
+$$('#imodes .chip').forEach(b=>b.onclick=()=>{imode=b.dataset.m;$$('#imodes .chip').forEach(x=>x.classList.toggle('on',x===b))});
+$('#ifile').onchange=e=>{const f=e.target.files[0];$('#iinfo').textContent=f?`${f.name} — ${fa(f.size/1024,0)} کیلوبایت`:''};
+const loadImg=f=>new Promise((res,rej)=>{const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);res(im)};im.onerror=()=>rej(new Error('این فایل، عکس معتبری نیست.'));im.src=u});
+const EXT={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+$('#iproc').onclick=async()=>{
+  const f=$('#ifile').files[0];if(!f)return alert('اول یک عکس انتخاب کنید.');
+  try{
+    const im=await loadImg(f),fmt=$('#ifmt').value,q=+$('#iq').value,W=Math.round(+$('#iw').value)||0;
+    let sx=0,sy=0,sw=im.width,sh=im.height,w=sw,h=sh;
+    if(imode==='k'){if(W&&W<sw){w=W;h=Math.round(sh*W/sw)}}
+    else if(imode==='r'){if(!W)return alert('عرض مورد نظر را وارد کنید.');w=W;h=Math.round(sh*W/sw)}
+    else if(imode==='p'){if(sw/sh>.75){sw=Math.round(sh*.75);sx=Math.round((im.width-sw)/2)}else{sh=Math.round(sw/.75);sy=Math.round((im.height-sh)/2)}w=W||600;h=Math.round(w*4/3)}
+    const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
+    if(fmt!=='image/png'){g.fillStyle='#fff';g.fillRect(0,0,w,h)}
+    g.drawImage(im,sx,sy,sw,sh,0,0,w,h);
+    const blob=await new Promise(r=>c.toBlob(r,fmt,q));
+    if(!blob)throw new Error('ساخت خروجی ممکن نشد.');
+    if(imgUrl)URL.revokeObjectURL(imgUrl);imgUrl=URL.createObjectURL(blob);
+    const ext=EXT[blob.type]||'png',base=f.name.replace(/\.[^.]+$/,'');
+    $('#ires').innerHTML=`<img src="${imgUrl}" alt="نتیجه" style="max-width:100%;max-height:320px;border:1.5px solid var(--line);border-radius:10px"><p class="note">اندازه: ${fa(w,0)}×${fa(h,0)} پیکسل — حجم قبل: ${fa(f.size/1024,0)} کیلوبایت، بعد: ${fa(blob.size/1024,0)} کیلوبایت</p><a class="btn" style="display:inline-block;text-decoration:none" href="${imgUrl}" download="${base.replace(/"/g,'')}-edubox.${ext}">دانلود</a>`;
+  }catch(e){alert(e.message||'خطا در پردازش عکس.')}};
+
+/* ===== عکس به PDF (ساخت مستقیم فایل PDF بدون کتابخانه) ===== */
+function mkPdf(L){
+  const enc=new TextEncoder(),parts=[],offs=[];let len=0;
+  const push=b=>{if(typeof b==='string')b=enc.encode(b);parts.push(b);len+=b.length};
+  const obj=(n,fn)=>{offs[n]=len;push(n+' 0 obj\n');fn();push('\nendobj\n')};
+  const W=595.28,H=841.89,M=24,N=2+3*L.length;
+  push('%PDF-1.4\n');
+  obj(1,()=>push('<< /Type /Catalog /Pages 2 0 R >>'));
+  obj(2,()=>push('<< /Type /Pages /Count '+L.length+' /Kids ['+L.map((_,i)=>(5+3*i)+' 0 R').join(' ')+'] >>'));
+  L.forEach((im,i)=>{
+    const s=Math.min((W-2*M)/im.w,(H-2*M)/im.h),dw=(im.w*s).toFixed(2),dh=(im.h*s).toFixed(2),x=((W-im.w*s)/2).toFixed(2),y=((H-im.h*s)/2).toFixed(2);
+    const cs='q '+dw+' 0 0 '+dh+' '+x+' '+y+' cm /Im0 Do Q';
+    obj(3+3*i,()=>{push('<< /Type /XObject /Subtype /Image /Width '+im.w+' /Height '+im.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+im.b.length+' >>\nstream\n');push(im.b);push('\nendstream')});
+    obj(4+3*i,()=>push('<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream'));
+    obj(5+3*i,()=>push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+W+' '+H+'] /Resources << /XObject << /Im0 '+(3+3*i)+' 0 R >> >> /Contents '+(4+3*i)+' 0 R >>'));
+  });
+  const xo=len;
+  push('xref\n0 '+(N+1)+'\n0000000000 65535 f \n');
+  for(let n=1;n<=N;n++)push(String(offs[n]).padStart(10,'0')+' 00000 n \n');
+  push('trailer\n<< /Size '+(N+1)+' /Root 1 0 R >>\nstartxref\n'+xo+'\n%%EOF');
+  return new Blob(parts,{type:'application/pdf'})}
+let pdfUrl=null;
+$('#pbtn').onclick=async()=>{
+  const fs=[...$('#pfile').files];if(!fs.length)return alert('عکس‌ها را انتخاب کنید.');
+  try{
+    const L=[];
+    for(const f of fs){
+      const im=await loadImg(f),k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+      const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);
+      const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.88));
+      L.push({w:c.width,h:c.height,b:new Uint8Array(await b.arrayBuffer())})}
+    const blob=mkPdf(L);if(pdfUrl)URL.revokeObjectURL(pdfUrl);pdfUrl=URL.createObjectURL(blob);
+    $('#pres').innerHTML=`<p class="note">فایل PDF با ${fa(L.length,0)} صفحه ساخته شد (${fa(blob.size/1024,0)} کیلوبایت).</p><a class="btn" style="display:inline-block;text-decoration:none" href="${pdfUrl}" download="edubox-images.pdf">دانلود PDF</a>`;
+  }catch(e){alert(e.message||'ساخت PDF ممکن نشد.')}};
+
+/* ===== تاریخ ===== */
+const JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const GM=['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'];
+const WD=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+function g2j(gy,gm,gd){
+  const gdm=[0,31,59,90,120,151,181,212,243,273,304,334],gy2=gm>2?gy+1:gy;
+  let days=355666+365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)+gd+gdm[gm-1];
+  let jy=-1595+33*Math.floor(days/12053);days%=12053;
+  jy+=4*Math.floor(days/1461);days%=1461;
+  if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365}
+  let jm,jd;
+  if(days<186){jm=1+Math.floor(days/31);jd=1+days%31}else{jm=7+Math.floor((days-186)/30);jd=1+(days-186)%30}
+  return[jy,jm,jd]}
+function j2g(jy,jm,jd){
+  jy+=1595;
+  let days=-355668+365*jy+Math.floor(jy/33)*8+Math.floor((jy%33+3)/4)+jd+(jm<7?(jm-1)*31:(jm-7)*30+186);
+  let gy=400*Math.floor(days/146097);days%=146097;
+  if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++}
+  gy+=4*Math.floor(days/1461);days%=1461;
+  if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365}
+  let gd=days+1;
+  const sal=[0,31,((gy%4===0&&gy%100!==0)||gy%400===0)?29:28,31,30,31,30,31,31,30,31,30,31];
+  let gm=0;for(;gm<13&&gd>sal[gm];gm++)gd-=sal[gm];
+  return[gy,gm,gd]}
+const fmtJ=(y,m,d,w)=>`${WD[w]} ${fd(d)} ${JM[m-1]} ${fd(y)}`;
+const parseD=v=>v?v.split('-').map(Number):null;
+{const n=new Date(),j=g2j(n.getFullYear(),n.getMonth()+1,n.getDate());$('#dtoday').textContent=fmtJ(j[0],j[1],j[2],n.getDay())}
+$('#djm').innerHTML=JM.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+$('#dg').oninput=()=>{const p=parseD($('#dg').value);if(!p)return $('#dgr').textContent='';
+  const j=g2j(p[0],p[1],p[2]);$('#dgr').textContent=fmtJ(j[0],j[1],j[2],new Date(p[0],p[1]-1,p[2]).getDay())};
+function j2gShow(){const y=+$('#djy').value,m=+$('#djm').value,d=+$('#djd').value,o=$('#djr');
+  if(!y||!d||d<1||d>31){o.textContent='';return}
+  const g=j2g(y,m,d),b=g2j(g[0],g[1],g[2]);
+  if(b[0]!==y||b[1]!==m||b[2]!==d){o.textContent='این تاریخ شمسی وجود ندارد.';return}
+  o.textContent=`${fd(g[2])} ${GM[g[1]-1]} ${fd(g[0])} (${g[0]}-${String(g[1]).padStart(2,'0')}-${String(g[2]).padStart(2,'0')})`}
+['djy','djm','djd'].forEach(i=>$('#'+i).oninput=j2gShow);j2gShow();
+function diffShow(){const a=parseD($('#da').value),b=parseD($('#db').value),o=$('#dfr');
+  if(!a||!b){o.textContent='';return}
+  const d=Math.round((Date.UTC(b[0],b[1]-1,b[2])-Date.UTC(a[0],a[1]-1,a[2]))/864e5),n=Math.abs(d);
+  o.textContent=`${fd(n)} روز (${fd(Math.floor(n/7))} هفته و ${fd(n%7)} روز)`+(d<0?' — تاریخ دوم قبل از اولی است':'')}
+['da','db'].forEach(i=>$('#'+i).oninput=diffShow);
+
+/* ===== پومودورو ===== */
+const PM={f:25,s:5,l:15};let pmode='f',pleft=25*60,pend=0,pid=null;
+function pdraw(){$('#ptime').textContent=fd(String(Math.floor(pleft/60)).padStart(2,'0')+':'+String(pleft%60).padStart(2,'0'))}
+function beep(){try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator();o.connect(a.destination);o.frequency.value=880;o.start();setTimeout(()=>{o.stop();a.close()},700)}catch(e){}}
+function pstop(){clearInterval(pid);pid=null;$('#pgo').textContent='شروع';document.title=document.title.replace(/^\S+ \| /,'')}
+function pset(m){pmode=m;pstop();pleft=PM[m]*60;pdraw()}
+$$('#pmodes .chip').forEach(b=>b.onclick=()=>{$$('#pmodes .chip').forEach(x=>x.classList.toggle('on',x===b));pset(b.dataset.m)});
+$('#pgo').onclick=()=>{
+  if(pid){pstop();return}
+  pend=Date.now()+pleft*1000;$('#pgo').textContent='توقف';
+  pid=setInterval(()=>{pleft=Math.max(0,Math.round((pend-Date.now())/1000));pdraw();
+    if(pleft<=0){pstop();beep();alert(pmode==='f'?'زمان تمرکز تمام شد. استراحت کن!':'استراحت تمام شد. برگرد سر درس!')}},500)};
+$('#prs').onclick=()=>pset(pmode);pdraw();
+
+/* ===== شمارنده کلمه و تبدیل اعداد ===== */
+$('#wtxt').oninput=()=>{const t=$('#wtxt').value,w=t.trim()?t.trim().split(/\s+/).length:0;
+  const S=(n,l)=>`<div><b>${fa(n,0)}</b>${l}</div>`;
+  $('#wst').innerHTML=S(w,'کلمه')+S(t.length,'نویسه')+S(t.replace(/\s/g,'').length,'نویسه بدون فاصله')+S(t?t.split(/\n/).length:0,'خط')+S(Math.ceil(w/200),'دقیقه مطالعه')};
+$('#wtxt').oninput();
+$('#d2fa').onclick=()=>$('#dout').value=$('#din').value.replace(/[0-9]/g,d=>FA[d]).replace(/[٠-٩]/g,d=>FA[AR.indexOf(d)]);
+$('#d2en').onclick=()=>$('#dout').value=toEn($('#din').value);
+$('#dcp').onclick=async()=>{try{await navigator.clipboard.writeText($('#dout').value)}catch(e){$('#dout').select();document.execCommand('copy')}};
+
+
+/* ===== نمودار عمومی (برای پنل مدیر) ===== */
+function chartInto(list,cs,ls){
+  const names=['درصد کل',...new Set(list.flatMap(h=>h.subs.map(s=>s.s)))];
+  if(!list.length){$(cs).innerHTML='<p class="note">نتیجه‌ای ثبت نشده.</p>';$(ls).innerHTML='';return}
+  const W=640,H=230,m=34,all=list.flatMap(h=>[h.overall,...h.subs.map(s=>s.p)]),lo=Math.min(0,...all),hi=100;
+  const x=i=>list.length==1?W/2:m+i*(W-2*m)/(list.length-1),y=p=>H-m-(p-lo)/(hi-lo)*(H-2*m);
+  const val=(h,n)=>n==='درصد کل'?h.overall:(h.subs.find(s=>s.s===n)||{}).p;
+  let g=[0,50,100].map(v=>`<line x1="${m}" x2="${W-m}" y1="${y(v)}" y2="${y(v)}" stroke="#D5DCEA"/><text x="${m-6}" y="${y(v)+4}" font-size="11" text-anchor="end" fill="#5F6C8A">${fa(v,0)}</text>`).join('');
+  names.forEach((n,k)=>{const pts=list.map((h,i)=>[i,val(h,n)]).filter(p=>p[1]!=null),c=COL[k%5];
+    g+=`<polyline fill="none" stroke="${c}" stroke-width="${k?2:3.5}" stroke-linejoin="round" ${k?'stroke-dasharray="5 4"':''} points="${pts.map(p=>x(p[0])+','+y(p[1])).join(' ')}"/>`+pts.map(p=>`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="4" fill="${c}"/>`).join('')});
+  $(cs).innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار پیشرفت">${g}</svg>`;
+  $(ls).innerHTML=names.map((n,k)=>`<span><i style="background:${COL[k%5]}"></i>${esc(n)}</span>`).join('')}
+
+/* ===== تغییر نام کاربری و رمز توسط دانش‌آموز ===== */
+$('#fcred').onsubmit=async e=>{e.preventDefault();
+  const m=$('#cmsg'),say=t=>{m.textContent=t;m.classList.toggle('hide',!t)};
+  if(!sess||sess.role!=='student')return;
+  const nu=$('#cu').value.trim(),p0=$('#cp0').value,p1=$('#cp1').value,p2=$('#cp2').value;
+  if(!p0)return say('رمز عبور فعلی را وارد کنید.');
+  if(p1&&p1!==p2)return say('تکرار رمز جدید با رمز جدید یکی نیست.');
+  if(nu===sess.u&&!p1)return say('تغییری وارد نشده است.');
+  try{
+    const r=await rpc('change_credentials',{p_user:sess.u,p_pass:p0,p_new_user:nu,p_new_pass:p1});
+    if(r==='bad')return say('رمز عبور فعلی اشتباه است.');
+    if(r==='exists')return say('این نام کاربری قبلاً گرفته شده.');
+    if(r!=='ok')return say('اطلاعات معتبر نیست. نام کاربری حداقل ۲ و رمز حداقل ۳ حرف باشد.');
+    sess.u=nu;if(p1)sess.p=p1;store.set('eb_sess',sess);
+    $('#cp0').value=$('#cp1').value=$('#cp2').value='';say('تغییرات ذخیره شد.');
+  }catch(err){say(netErr(err))}};
+
+/* ===== پنل مدیر: لیست دانش‌آموزان و آمار هر نفر ===== */
+const stT={ok:'تأییدشده',pending:'در انتظار',no:'ردشده'};
+async function renderStudents(){
+  let l;
+  try{l=await rpc('admin_list_students',ADM())}
+  catch(e){$('#slist').innerHTML=`<tr><td class="note" colspan="7">${esc(netErr(e))}</td></tr>`;return}
+  $('#slist').innerHTML=l.length?l.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.class)}</td><td dir="ltr" style="text-align:right">${esc(s.username)}</td><td><span class="pill">${stT[s.status]||esc(s.status)}</span></td><td>${fa(s.count,0)}</td><td>${s.avg==null?'—':fa(s.avg)+'٪'}</td><td style="text-align:left"><button class="btn alt sm" data-id="${esc(s.id)}">جزئیات</button></td></tr>`).join(''):'<tr><td class="note" colspan="7">هنوز دانش‌آموزی ثبت‌نام نکرده.</td></tr>';
+  $$('#slist button').forEach(b=>b.onclick=()=>showStudent(b.dataset.id))}
+async function showStudent(id){
+  const box=$('#sdet');
+  try{
+    const d=await rpc('admin_student_detail',{...ADM(),p_id:id});
+    const r=d.results.map(x=>({n:x.name||'آزمون',d:Date.parse(x.taken_at),overall:+x.overall,subs:x.subjects||[]}));
+    const n=r.length,avg=n?r.reduce((a,x)=>a+x.overall,0)/n:null,best=n?Math.max(...r.map(x=>x.overall)):null,last=n?r[n-1].overall:null;
+    const sm={};r.forEach(x=>x.subs.forEach(s=>{(sm[s.s]=sm[s.s]||[]).push(+s.p)}));
+    const S=(t,v)=>`<div><b>${v}</b>${t}</div>`,none='<tr><td class="note">نتیجه‌ای ثبت نشده.</td></tr>';
+    box.innerHTML=`<h2>${esc(d.name)} <span class="pill">${esc(d.class)}</span></h2>
+      <p class="note" dir="ltr" style="text-align:right">${esc(d.username)}</p>
+      <div class="stats">${S('آزمون',fa(n,0))}${S('آخرین درصد',last==null?'—':fa(last)+'٪')}${S('بهترین درصد',best==null?'—':fa(best)+'٪')}${S('میانگین',avg==null?'—':fa(avg)+'٪')}</div>
+      <h2 style="margin-top:1rem">نمودار پیشرفت</h2><div id="schart"></div><div class="legend" id="slegend"></div>
+      <h2 style="margin-top:1rem">میانگین هر درس</h2><table><tbody>${Object.keys(sm).map(k=>`<tr><td>${esc(k)}</td><td>${fa(sm[k].reduce((a,b)=>a+b,0)/sm[k].length)}٪</td></tr>`).join('')||none}</tbody></table>
+      <h2 style="margin-top:1rem">تاریخچه آزمون‌ها</h2><table><tbody>${[...r].reverse().map(x=>`<tr><td>${esc(x.n)}</td><td>${new Date(x.d).toLocaleDateString('fa-IR')}</td><td>${fa(x.overall)}٪</td></tr>`).join('')||none}</tbody></table>
+      <button class="btn alt sm" id="sclose" style="margin-top:1rem">بستن</button>`;
+    box.classList.remove('hide');chartInto(r,'#schart','#slegend');
+    $('#sclose').onclick=()=>box.classList.add('hide');
+    box.scrollIntoView({behavior:'smooth'});
+  }catch(e){alert(netErr(e))}}
+
+
+/* ===== اتصال به Supabase و حساب‌ها ===== */
+const SUPA='https://dxdrknkontyzpcubkgud.supabase.co',KEY='sb_publishable_aKNXNSJ1qEPtnSWCWHx0lg_42-pni2j';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function api(path,opt={}){
+  const r=await fetch(SUPA+'/rest/v1/'+path,{...opt,headers:{apikey:KEY,'Content-Type':'application/json'}});
+  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+  if(!r.ok)throw new Error((j&&j.message)||'خطای سرور');
+  return j}
+const rpc=(fn,a)=>api('rpc/'+fn,{method:'POST',body:JSON.stringify(a)});
+const netErr=e=>/Failed to fetch|NetworkError|Load failed/i.test(e.message)?'اتصال به سرور برقرار نشد. اینترنت را بررسی کنید.':(e.message||'خطا');
+// نام کاربری و رمز مدیر (اگر عوض کردی، باید در اسکریپت SQL هم همین را عوض کنی)
+const ADMIN={u:'admin',p:'edubox1405'};
+let sess=store.get('eb_sess',null);
+const USR=()=>({p_user:sess.u,p_pass:sess.p}),ADM=()=>({a_user:sess.u,a_pass:sess.p});
+
+/* برنامه امتحانی (مشترک بین همه) */
+async function loadExams(){
+  try{const r=await api('exams?select=id,class,subject,starts_at&order=starts_at');
+    ex=r.map(e=>({id:e.id,c:e.class,s:e.subject,t:Date.parse(e.starts_at)}))}catch(e){}
+  tick();if(sess&&sess.role==='admin')drawA()}
+function drawA(){
+  const l=[...ex].sort((a,b)=>a.t-b.t);
+  $('#alist').innerHTML=l.length?l.map(e=>`<tr><td>${esc(e.c)}</td><td>${esc(e.s)}</td><td>${fmtD(e.t)}</td><td style="text-align:left"><button class="btn bad sm" data-id="${e.id}">حذف</button></td></tr>`).join(''):'<tr><td class="note">امتحانی ثبت نشده.</td></tr>';
+  $$('#alist button').forEach(b=>b.onclick=async()=>{try{await rpc('admin_delete_exam',{...ADM(),p_id:+b.dataset.id});await loadExams()}catch(e){alert(netErr(e))}})}
+$('#aadd').onclick=async()=>{const t=new Date($('#at').value);if(isNaN(t))return $('#at').focus();
+  const nm=$('#as').value.trim();if(!nm)return $('#as').focus();
+  try{await rpc('admin_add_exam',{...ADM(),p_class:$('#ac').value,p_subject:nm,p_time:t.toISOString()});$('#at').value='';$('#as').value='';await loadExams()}catch(e){alert(netErr(e))}};
+
+/* تاریخچه نتایج هر دانش‌آموز */
+async function loadHist(){
+  try{const r=await rpc('my_results',USR());hist=r.map(x=>({id:x.id,n:x.name||'آزمون',d:Date.parse(x.taken_at),overall:+x.overall,subs:x.subjects||[]}))}catch(e){hist=[]}
+  drawH()}
+async function saveRes(){
+  if(!sess||sess.role!=='student')return alert('ذخیره نتیجه فقط با حساب دانش‌آموز ممکن است.');
+  try{await rpc('save_result',{...USR(),p_name:$('#pn').value||'آزمون بدون نام',p_overall:cur.overall,p_subjects:cur.subs});$('#save').disabled=true;await loadHist()}catch(e){alert(netErr(e))}}
+async function delRes(i){try{await rpc('delete_result',{...USR(),p_id:hist[i].id});await loadHist()}catch(e){alert(netErr(e))}}
+
+/* ورود و ثبت‌نام */
+const amsg=t=>{const m=$('#amsg');m.textContent=t;m.classList.toggle('hide',!t)};
+$$('#atabs .chip').forEach(b=>b.onclick=()=>{$$('#atabs .chip').forEach(x=>x.classList.toggle('on',x===b));$('#fl').classList.toggle('hide',b.dataset.t!=='l');$('#fr').classList.toggle('hide',b.dataset.t!=='r');amsg('')});
+$('#fl').onsubmit=async e=>{e.preventDefault();const u=$('#lu').value.trim(),p=$('#lp').value;
+  if(!u||!p)return amsg('نام کاربری و رمز عبور را وارد کنید.');
+  amsg('در حال ورود...');
+  try{
+    if(u===ADMIN.u&&p===ADMIN.p)sess={role:'admin',u,p};
+    else{const r=await rpc('login_user',{p_username:u,p_password:p});
+      if(r.status==='bad')return amsg('نام کاربری یا رمز عبور اشتباه است.');
+      if(r.status==='pending')return amsg('حساب شما هنوز در انتظار تأیید مدیر است.');
+      if(r.status==='no')return amsg('درخواست ثبت‌نام شما رد شده است.');
+      sess={role:'student',u,p,n:r.name,c:r.class}}
+  }catch(err){return amsg(netErr(err))}
+  store.set('eb_sess',sess);amsg('');e.target.reset();await enter()};
+$('#fr').onsubmit=async e=>{e.preventDefault();const n=$('#rn').value.trim(),u=$('#ru').value.trim(),p=$('#rp').value;
+  if(!n||!u||!p)return amsg('همه فیلدها را پر کنید.');
+  try{const r=await rpc('register_user',{p_name:n,p_class:$('#rc').value,p_username:u,p_password:p});
+    if(r==='exists')return amsg('این نام کاربری قبلاً گرفته شده.');
+    if(r!=='ok')return amsg('اطلاعات معتبر نیست. رمز حداقل ۳ و نام کاربری حداقل ۲ حرف باشد.');
+    e.target.reset();amsg('درخواست ثبت شد. بعد از تأیید مدیر می‌توانید وارد شوید.')}catch(err){amsg(netErr(err))}};
+
+/* ورود اجباری: بدون حساب فقط صفحه ورود دیده می‌شود */
+function gate(){$('#nav').classList.add('hide');go('acct')}
+const out=()=>{sess=null;store.set('eb_sess',null);hist=[];ex=[];gate()};
+$('#mout').onclick=out;$('#aout').onclick=out;
+async function enter(){
+  $('#nav').classList.remove('hide');
+  const b=$('#navAcct'),ad=sess.role==='admin';
+  b.dataset.p=ad?'admin':'me';b.textContent=ad?'پنل مدیر':'پنل من';
+  if(!ad){$('#pc').value=$('#hc').value=$('#ec').value=sess.c;store.set('eb_class',sess.c);subs();rows()}
+  go(ad?'admin':'home');
+  if(ad){hist=[];drawH()}
+  await Promise.all([loadExams(),ad?renderAdmin():loadHist()]);
+  renderMe()}
+$('#navAcct').addEventListener('click',()=>{if(sess)sess.role==='admin'?renderAdmin():renderMe()});
+
+/* پنل دانش‌آموز */
+function renderMe(){if(!sess||sess.role!=='student')return;
+  $('#mh').innerHTML=`سلام، ${esc(sess.n)} <span class="pill">${esc(sess.c)}</span>`;
+  const l=hist.length;
+  $('#m1').textContent=fa(l,0);
+  $('#m2').textContent=l?fa(hist[l-1].overall)+'٪':'—';
+  $('#m3').textContent=l?fa(Math.max(...hist.map(h=>h.overall)))+'٪':'—';
+  $('#cu').value=sess.u;$('#mcd').dataset.c=sess.c;$('#mcd').innerHTML=cdHTML(sess.c,false)}
+
+/* پنل مدیر (فقط آمار تجمیعی) */
+async function renderAdmin(){
+  let o;
+  try{o=await rpc('admin_overview',ADM())}
+  catch(e){$('#astat').innerHTML='';$('#pend').innerHTML=`<tr><td class="note">${esc(netErr(e))}</td></tr>`;return}
+  const C=(t,v)=>`<div class="card" style="margin:0"><div class="note">${t}</div><div class="big">${v}</div></div>`;
+  $('#astat').innerHTML=C('دانش‌آموز تأییدشده',fa(o.approved,0))+C('در انتظار تأیید',fa(o.pending.length,0))+C('آزمون ثبت‌شده',fa(o.results,0))+C('میانگین درصد کل',o.avg==null?'—':fa(o.avg)+'٪');
+  $('#acls').textContent='تعداد دانش‌آموزان هر کلاس: '+Object.keys(CL).map(c=>c+' '+fa(o.by_class[c]||0,0)).join(' | ');
+  $('#pend').innerHTML=o.pending.length?o.pending.map(v=>`<tr><td>${esc(v.name)}</td><td>${esc(v.class)}</td><td>${esc(v.username)}</td><td style="text-align:left"><button class="btn sm" data-id="${v.id}" data-a="ok">تأیید</button> <button class="btn bad sm" data-id="${v.id}" data-a="no">رد</button></td></tr>`).join(''):'<tr><td class="note">درخواستی در انتظار نیست.</td></tr>';
+  $$('#pend button').forEach(b=>b.onclick=async()=>{try{await rpc('admin_set_status',{...ADM(),p_id:b.dataset.id,p_status:b.dataset.a});await renderAdmin()}catch(e){alert(netErr(e))}});
+  drawA();renderStudents()}
+
+opts($('#rc'),Object.keys(CL));
+sess?enter():gate();
+</script>
+</body>
+</html>
